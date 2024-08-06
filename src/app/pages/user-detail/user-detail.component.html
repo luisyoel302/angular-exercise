@@ -1,0 +1,76 @@
+<a [routerLink]="['']">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-back-up"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M9 14l-4 -4l4 -4" />
+    <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
+  </svg>
+  Back
+</a>
+
+@if(userQuery.isLoading()){
+<p class="center-item">Loading...</p>
+}@else {
+
+<section>
+  <article>
+    <img
+      alt="{{ userQuery.data()?.name }}"
+      [ngSrc]="userQuery.data()?.image ?? ''"
+      priority=""
+      width="200"
+      height="100"
+    />
+    <section>
+      <h1>{{ userQuery.data()?.name }}</h1>
+      <p>{{ userQuery.data()?.species }}</p>
+      <div>
+        <button (click)="openModal()">Edit</button>
+        <button (click)="deleteUser(userQuery.data()?.id ?? '')">Delete</button>
+
+        @if(showModal){
+        <app-modal (close)="closeModal()" titleModal="Update User">
+          <!-- <app-form [items]="user" (close)="closeModal()" /> -->
+        </app-modal>
+        }
+      </div>
+    </section>
+  </article>
+  <hr />
+  <!-- <b>{{ user?.text }}</b>
+  <p>{{ user?.description }}</p> -->
+</section>
+
+<!-- <section>
+  <article>
+    <img alt="{{ user?.name }}" [ngSrc]="user?.image ?? ''" priority="" />
+    <section>
+      <h1>{{ user?.name }}</h1>
+      <p>{{ user?.phoneNumber }}</p>
+      <div>
+        <button (click)="openModal()">Edit</button>
+        <button (click)="deleteUser(user?.id ?? '')">Delete</button>
+
+        @if(showModal){
+        <app-modal (close)="closeModal()" titleModal="Update User">
+          <app-form [items]="user" (close)="closeModal()" />
+        </app-modal>
+        }
+      </div>
+    </section>
+  </article>
+  <hr />
+  <b>{{ user?.text }}</b>
+  <p>{{ user?.description }}</p>
+</section> -->
+}

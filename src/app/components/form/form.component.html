@@ -1,0 +1,72 @@
+<div class="container">
+  <form [formGroup]="form()" (ngSubmit)="submit()">
+    <div>
+      <input
+        [className]="getValidInput('name') ? 'input-error' : ''"
+        formControlName="name"
+        ype="text"
+        placeholder="Name"
+      />
+      @if(getValidInput('name')){
+      <div class="error">This field is required</div>
+      }
+    </div>
+
+    <div>
+      <input
+        [className]="getValidInput('phoneNumber') ? 'input-error' : ''"
+        type="text"
+        placeholder="Phone"
+        formControlName="phoneNumber"
+      />
+      @if(getValidInput('phoneNumber')){
+      <div class="error">This field is required</div>
+      }
+    </div>
+
+    <div>
+      <input
+        [className]="getValidInput('text') ? 'input-error' : ''"
+        type="text"
+        formControlName="text"
+        placeholder="Text"
+      />
+      @if(getValidInput('text')){
+      <div class="error">This field is required</div>
+      }
+    </div>
+
+    <div>
+      <textarea
+        [className]="getValidInput('description') ? 'input-error' : ''"
+        formControlName="description"
+        placeholder="Description"
+      ></textarea>
+      @if(getValidInput('description')){
+      <div class="error">This field is required</div>
+      }
+    </div>
+
+    @if(!this.items()){
+    <div>
+      @if(file){
+      <img [src]="file" alt="Upload" />
+      }@else {
+      <input
+        [className]="getValidInput('image') ? 'input-error' : ''"
+        (change)="onImagePicker($event)"
+        type="file"
+        formControlName="image"
+        placeholder="Select file"
+      />
+      } @if(getValidInput('image')){
+      <div class="error">This field is required</div>
+      }
+    </div>
+    }
+
+    <button [disabled]="form().invalid" type="submit">
+      {{ loading ? "Submiting..." : "Submit" }}
+    </button>
+  </form>
+</div>

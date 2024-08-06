@@ -1,0 +1,43 @@
+a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+article {
+  margin-top: 30px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+section {
+  width: 100%;
+}
+
+img {
+  object-fit: cover;
+  height: auto;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+div {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 16px;
+}
+
+button {
+  padding: 8px;
+  font-size: 1rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+hr {
+  margin-block: 3rem;
+  background-color: yellow;
+}

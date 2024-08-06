@@ -1,0 +1,46 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+input {
+  width: 100%;
+  padding-block: 10px;
+  font-size: 1rem;
+}
+
+.input-error {
+  border: none;
+  outline: 2px solid red;
+}
+
+.input-error:focus {
+  border: none;
+  outline: 2px solid red;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  font-size: 1rem;
+}
+
+button {
+  width: 100%;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.error {
+  color: rgb(238, 18, 18);
+  margin: 0.3rem;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

@@ -1,0 +1,11 @@
+<div class="modal" (click)="onBackdropClick($event)">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h2>{{ titleModal() }}</h2>
+    <ng-content></ng-content>
+    <!-- <footer>
+      <button (click)="handleSubmit()">Submit</button>
+      <button (click)="closeModal()">Close</button>
+    </footer> -->
+  </div>
+</div>

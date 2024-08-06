@@ -1,0 +1,16 @@
+<a [routerLink]="['user-detail/' + user().id]">
+  <section>
+    @defer (on viewport) {
+    <img
+      alt="{{ user().name }}"
+      src="{{ user().image }}"
+      width="100"
+      height="100"
+      priority=""
+    />
+    } @placeholder {
+    <div>Loading...</div>
+    }
+    <p>{{ user().name }}</p>
+  </section>
+</a>
