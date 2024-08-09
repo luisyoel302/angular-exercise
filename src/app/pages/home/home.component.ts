@@ -4,6 +4,7 @@ import { ModalComponent } from '../../components/modal/modal.component';
 import { FormComponent } from '../../components/form/form.component';
 import { UserService } from '../../services/user/user.service';
 import {
+  injectInfiniteQuery,
   injectQuery,
   injectQueryClient,
 } from '@tanstack/angular-query-experimental';
@@ -20,8 +21,11 @@ import { debounceTime, Subject } from 'rxjs';
 export class HomeComponent {
   private readonly route = inject(Router);
   private readonly _userSvc = inject(UserService);
-  queryClient = injectQueryClient();
 
+  queryClient = injectQueryClient();
+  pagination = signal(
+    this._userSvc.getUrlQuerys().url.searchParams.get('page')
+  );
   showModal = false;
   search = signal<string>(
     this._userSvc.getUrlQuerys().url.searchParams.get('name') ?? ''
@@ -29,22 +33,38 @@ export class HomeComponent {
   debouncedValue = signal<string>('');
   private inputSubject = new Subject<string>();
 
-  page = signal(this._userSvc.getUrlQuerys().url.searchParams.get('page') ?? 1);
-
   constructor() {
     this.inputSubject
       .pipe(debounceTime(500))
       .subscribe((value) => this.debouncedValue.set(value));
-
-    console.log(
-      Number(this._userSvc.getUrlQuerys().url.searchParams.get('page'))
-    );
   }
 
-  userQuery = injectQuery(() => ({
-    queryKey: ['users', this.debouncedValue(), this.page()],
-    queryFn: () => this._userSvc.getUsers(),
+  userQuery = injectInfiniteQuery(() => ({
+    queryKey: ['users', this.debouncedValue()],
+    initialPageParam: '',
+    queryFn: ({ pageParam }) => {
+      return this._userSvc.getUsers(pageParam);
+    },
+    getNextPageParam: (lastPage) => {
+      if (!lastPage?.lastEvaluatedKey) {
+        return null;
+      }
+      return lastPage?.lastEvaluatedKey?.id;
+    },
+    select: (data) => {
+      const newData = data.pages.flat();
+      return newData.flatMap((item) => item.data);
+    },
   }));
+
+  ngOnInit() {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !this.userQuery.isFetching()) {
+        this.userQuery.fetchNextPage();
+      }
+    });
+    observer.observe(document.querySelector('#loader') as Element);
+  }
 
   openModal() {
     this.showModal = true;
@@ -56,29 +76,12 @@ export class HomeComponent {
 
   applyFilter(event: Event) {
     const search = (event.target as HTMLInputElement).value;
-    const { params } = this._userSvc.getUrlQuerys();
     if (search !== '') {
-      this.route.navigate([''], { queryParams: { ...params, name: search } });
+      this.route.navigate([''], { queryParams: { name: search } });
     } else {
-      console.log(params);
-      this.route.navigate([''], { queryParams: { ...params } });
+      this.route.navigate(['']);
     }
     this.search.update(() => search);
     this.inputSubject.next(search);
-  }
-
-  loadMore({ isNextPage }: { isNextPage: boolean }) {
-    const { params } = this._userSvc.getUrlQuerys();
-    if (isNextPage && this.userQuery.data()?.info.next) {
-      this.route.navigate([''], {
-        queryParams: { ...params, page: +this.page() + 1 },
-      });
-      this.page.update((v) => +v + 1);
-    } else if (!isNextPage && this.userQuery.data()?.info.prev) {
-      this.route.navigate([''], {
-        queryParams: { ...params, page: +this.page() - 1 },
-      });
-      this.page.update((v) => +v - 1);
-    }
   }
 }

@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { User } from '../../../types/types';
-import { UsersService } from '../../pages/home/home.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-form',
@@ -24,20 +24,20 @@ import { UsersService } from '../../pages/home/home.service';
   styleUrl: './form.component.css',
 })
 export class FormComponent implements OnInit {
-  private readonly userSvc = inject(UsersService);
+  private readonly userSvc = inject(UserService);
   @Output() close = new EventEmitter<void>();
   items = input<User>();
-  loading = false;
+
   file = '';
   form = signal<FormGroup>(
     new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required]),
-      phoneNumber: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required]),
       text: new FormControl('', [Validators.required]),
       id: new FormControl(''),
-      image: new FormControl<File | null>(null),
-      imageSource: new FormControl<File | null>(null),
+      //image: new FormControl<File | null>(null),
+      //imageSource: new FormControl<File | null>(null),
     })
   );
 
@@ -48,19 +48,19 @@ export class FormComponent implements OnInit {
         description: this.items()?.description,
         text: this.items()?.text,
         id: this.items()?.id,
-        phoneNumber: this.items()?.phoneNumber,
-        image: '',
-        imageSource: '',
+        phone: this.items()?.phone,
+        // image: '',
+        // imageSource: '',
       });
     }
-    this.userSvc.loading$.subscribe((loading) => {
-      this.loading = loading;
-    });
   }
 
   closeModal = () => {
     this.close.emit();
   };
+
+  createUser = this.userSvc.createUser(() => this.closeModal());
+  updateUser = this.userSvc.updateUser(() => this.closeModal());
 
   submit() {
     if (this.form().valid) {
@@ -71,12 +71,9 @@ export class FormComponent implements OnInit {
       });
 
       if (this.items()) {
-        this.userSvc.updateUser(
-          this.form().get('id')?.value,
-          this.form().value
-        );
+        this.updateUser.mutate(this.form().value);
       } else {
-        this.userSvc.createUser(this.form().value, () => this.closeModal());
+        this.createUser.mutate(this.form().value);
       }
     } else {
       this.form().markAllAsTouched();

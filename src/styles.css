@@ -33,3 +33,8 @@ button:hover {
   display: flex;
   justify-content: center;
 }
+
+button:disabled,
+button[disabled] {
+  cursor: default;
+}

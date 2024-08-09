@@ -20,57 +20,36 @@
 
 @if(userQuery.isLoading()){
 <p class="center-item">Loading...</p>
-}@else {
-
+} @else if (userQuery.isError()) {
+<span>Error: {{ userQuery.error().message }}</span> }@else {
 <section>
   <article>
     <img
       alt="{{ userQuery.data()?.name }}"
-      [ngSrc]="userQuery.data()?.image ?? ''"
+      [src]="userQuery.data()?.image ?? ''"
       priority=""
-      width="200"
-      height="100"
+      width="100"
+      height="200"
     />
     <section>
       <h1>{{ userQuery.data()?.name }}</h1>
-      <p>{{ userQuery.data()?.species }}</p>
+      <p>{{ userQuery.data()?.phone }}</p>
       <div>
         <button (click)="openModal()">Edit</button>
-        <button (click)="deleteUser(userQuery.data()?.id ?? '')">Delete</button>
+        <button (click)="deleteUser(userQuery.data()?.id ?? '')">
+          {{ deleteUserMutation.isPending() ? "Deleting..." : "Delete" }}
+        </button>
 
         @if(showModal){
         <app-modal (close)="closeModal()" titleModal="Update User">
-          <!-- <app-form [items]="user" (close)="closeModal()" /> -->
+          <app-form [items]="userQuery.data()" (close)="closeModal()" />
         </app-modal>
         }
       </div>
     </section>
   </article>
   <hr />
-  <!-- <b>{{ user?.text }}</b>
-  <p>{{ user?.description }}</p> -->
+  <b>{{ userQuery.data()?.text }}</b>
+  <p>{{ userQuery.data()?.description }}</p>
 </section>
-
-<!-- <section>
-  <article>
-    <img alt="{{ user?.name }}" [ngSrc]="user?.image ?? ''" priority="" />
-    <section>
-      <h1>{{ user?.name }}</h1>
-      <p>{{ user?.phoneNumber }}</p>
-      <div>
-        <button (click)="openModal()">Edit</button>
-        <button (click)="deleteUser(user?.id ?? '')">Delete</button>
-
-        @if(showModal){
-        <app-modal (close)="closeModal()" titleModal="Update User">
-          <app-form [items]="user" (close)="closeModal()" />
-        </app-modal>
-        }
-      </div>
-    </section>
-  </article>
-  <hr />
-  <b>{{ user?.text }}</b>
-  <p>{{ user?.description }}</p>
-</section> -->
 }

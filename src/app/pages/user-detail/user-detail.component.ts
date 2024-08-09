@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { FormComponent } from '../../components/form/form.component';
 import { NgOptimizedImage } from '@angular/common';
@@ -12,24 +12,19 @@ import {
 @Component({
   selector: 'app-user-detail',
   standalone: true,
-  imports: [RouterModule, ModalComponent, FormComponent, NgOptimizedImage],
+  imports: [RouterModule, ModalComponent, FormComponent],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.css',
 })
 export class UserDetailComponent {
   private readonly _userSvc = inject(UserService);
+  private readonly router = inject(ActivatedRoute);
 
-  queryClient = injectQueryClient();
   showModal = false;
+  id = this.router.snapshot.params['id'];
 
-  //get from url params
-  id = input<string>('');
-
-  userQuery = injectQuery(() => ({
-    queryKey: ['user', this.id()],
-    queryFn: () => this._userSvc.getOneUser(this.id()),
-    enabled: !!this.id,
-  }));
+  userQuery = this._userSvc.getOneUser(this.id ?? '', { enabled: !!this.id });
+  deleteUserMutation = this._userSvc.deleteUser();
 
   openModal() {
     this.showModal = true;
@@ -40,6 +35,6 @@ export class UserDetailComponent {
   }
 
   deleteUser(id: any) {
-    //this.userSvc.deleteUser(id);
+    this.deleteUserMutation.mutate({ id });
   }
 }

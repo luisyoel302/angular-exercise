@@ -14,12 +14,12 @@
 
     <div>
       <input
-        [className]="getValidInput('phoneNumber') ? 'input-error' : ''"
+        [className]="getValidInput('phone') ? 'input-error' : ''"
         type="text"
         placeholder="Phone"
-        formControlName="phoneNumber"
+        formControlName="phone"
       />
-      @if(getValidInput('phoneNumber')){
+      @if(getValidInput('phone')){
       <div class="error">This field is required</div>
       }
     </div>
@@ -47,7 +47,7 @@
       }
     </div>
 
-    @if(!this.items()){
+    <!-- @if(!this.items()){
     <div>
       @if(file){
       <img [src]="file" alt="Upload" />
@@ -63,10 +63,14 @@
       <div class="error">This field is required</div>
       }
     </div>
-    }
+    } -->
 
     <button [disabled]="form().invalid" type="submit">
-      {{ loading ? "Submiting..." : "Submit" }}
+      {{
+        createUser.isPending() || updateUser.isPending()
+          ? "Submiting..."
+          : "Submit"
+      }}
     </button>
   </form>
 </div>

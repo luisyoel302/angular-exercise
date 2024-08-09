@@ -33,25 +33,21 @@
     <app-form (close)="closeModal()" />
   </app-modal>
   } @if(userQuery.isLoading()){
-  <div class="center-item">Loading ...</div>
-  }
-  <button
-    [disabled]="!this.userQuery.data()?.info.prev"
-    (click)="loadMore({ isNextPage: false })"
-  >
-    Previous Page
-  </button>
-  <button
-    [disabled]="!this.userQuery.data()?.info.next"
-    (click)="loadMore({ isNextPage: true })"
-  >
-    Next Page
-  </button>
+  <p class="center-item">Loading ...</p>
+  } @else if (userQuery.isError()) {
+  <span>Error: {{ userQuery.error()?.message }}</span>
+  } @else {
   <section>
-    @for(user of userQuery.data()?.results; track user.id){
+    @for(user of userQuery.data(); track user.id){
     <app-card-item [user]="user" />
-    } @empty { @if(!userQuery.isLoading()){
-    <div class="center-item">Data not found</div>
-    } }
+    }
   </section>
+  @if(userQuery.data()?.length === 0){
+  <p class="center-item">Data not found</p>
+  } }
+  <div id="loader">
+    @if( userQuery.data() && userQuery.isFetching()){
+    <p class="center-item">Loading ...</p>
+    }
+  </div>
 </div>

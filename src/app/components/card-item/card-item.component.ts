@@ -1,7 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Character, User } from '../../../types/types';
-import { NgOptimizedImage } from '@angular/common';
+import { User } from '../../../types/types';
 
 @Component({
   selector: 'app-card-item',
@@ -11,5 +10,5 @@ import { NgOptimizedImage } from '@angular/common';
   styleUrl: './card-item.component.css',
 })
 export class CardItemComponent {
-  user = input.required<Character>();
+  user = input.required<User>();
 }
