@@ -3,11 +3,7 @@ import { CardItemComponent } from '../../components/card-item/card-item.componen
 import { ModalComponent } from '../../components/modal/modal.component';
 import { FormComponent } from '../../components/form/form.component';
 import { UserService } from '../../services/user/user.service';
-import {
-  injectInfiniteQuery,
-  injectQuery,
-  injectQueryClient,
-} from '@tanstack/angular-query-experimental';
+import { injectInfiniteQuery } from '@tanstack/angular-query-experimental';
 import { Router } from '@angular/router';
 import { debounceTime, Subject } from 'rxjs';
 
@@ -21,17 +17,13 @@ import { debounceTime, Subject } from 'rxjs';
 export class HomeComponent {
   private readonly route = inject(Router);
   private readonly _userSvc = inject(UserService);
+  private inputSubject = new Subject<string>();
 
-  queryClient = injectQueryClient();
-  pagination = signal(
-    this._userSvc.getUrlQuerys().url.searchParams.get('page')
-  );
   showModal = false;
   search = signal<string>(
     this._userSvc.getUrlQuerys().url.searchParams.get('name') ?? ''
   );
   debouncedValue = signal<string>('');
-  private inputSubject = new Subject<string>();
 
   constructor() {
     this.inputSubject
